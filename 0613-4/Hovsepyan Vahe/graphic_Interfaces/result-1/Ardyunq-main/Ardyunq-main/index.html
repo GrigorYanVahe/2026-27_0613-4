@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Developer Profile</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121826;
+            color: white;
+            text-align: center;
+            padding: 30px;
+        }
+
+        .container {
+            background-color: #1e293b;
+            max-width: 450px;
+            margin: auto;
+            padding: 25px;
+            border-radius: 15px;
+        }
+
+        h1 {
+            color: #38bdf8;
+        }
+
+        input, select, button {
+            padding: 10px;
+            margin: 5px;
+            border-radius: 6px;
+            border: none;
+        }
+
+        input, select {
+            background-color: #334155;
+            color: white;
+        }
+
+        button {
+            background-color: #0284c7;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0369a1;
+        }
+
+        label {
+            display: inline-block;
+            margin: 5px;
+        }
+
+        #result {
+            margin-top: 20px;
+            overflow-wrap: anywhere;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Developer Profile</h1>
+
+        <p>Имя:</p>
+        <input type="text" id="name" placeholder="Введите имя">
+
+        <p>Возраст:</p>
+        <input type="number" id="age" placeholder="Введите возраст">
+
+        <p>Профессия:</p>
+        <select id="profession">
+            <option value="Программист">Программист</option>
+            <option value="Дизайнер">Дизайнер</option>
+            <option value="Инженер">Инженер</option>
+        </select>
+
+        <p>Интересы:</p>
+
+        <label>
+            <input type="checkbox" name="interest" value="Программирование">
+            Код
+        </label>
+
+        <label>
+            <input type="checkbox" name="interest" value="Игры">
+            Игры
+        </label>
+
+        <label>
+            <input type="checkbox" name="interest" value="Спорт">
+            Спорт
+        </label>
+
+        <br><br>
+
+        <button id="createButton">Создать профиль</button>
+        <button id="clearButton">Очистить</button>
+
+        <hr>
+
+        <h2>Do you like programming?</h2>
+        <button id="yesButton">Yes</button>
+        <button id="noButton">No</button>
+
+        <div id="result"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
