@@ -1,0 +1,133 @@
+/* Հիմնական կարգավորումներ */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Ֆոնի գույնը փոխված է մեղմ, հաճելի էմերալդ/կանաչավուն երանգի */
+body {
+    background-color: #f0fdf4; /* Էջի հիմնական լուսավոր ֆոնը */
+    color: #0f172a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* Գլխավոր քարտի ֆոնը */
+.app-wrapper {
+    background-color: #ffffff; /* Մաքուր սպիտակ ֆոն */
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); /* Ավելի մեղմ ստվեր */
+    border: 1px solid #e2e8f0;
+    width: 100%;
+    max-width: 550px;
+}
+
+.header-section {
+    margin-bottom: 20px;
+}
+
+.main-title {
+    font-size: 1.5rem;
+    color: #059669; /* Էմերալդ կանաչ վերնագիր */
+    margin-bottom: 5px;
+}
+
+.subtitle {
+    font-size: 0.9rem;
+    color: #64748b;
+}
+
+/* Մենյուի ոճեր */
+.navigation-bar {
+    margin-bottom: 25px;
+}
+
+.dropdown-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+/* Մենյուի կոճակի ֆոնը */
+.menu-btn {
+    background-color: #10b981; /* Կանաչ կոճակ */
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    font-size: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+.menu-btn:hover {
+    background-color: #059669; /* Ավելի մուգ կանաչ մկնիկը պահելիս */
+}
+
+.arrow {
+    font-size: 0.75rem;
+}
+
+/* Ենթամենյուի ֆոնը */
+.submenu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #ffffff;
+    min-width: 160px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    margin-top: 6px;
+    overflow: hidden;
+    z-index: 10;
+}
+
+.submenu-item {
+    color: #334155;
+    padding: 10px 15px;
+    text-decoration: none;
+    display: block;
+    font-size: 0.95rem;
+    transition: background-color 0.2s;
+}
+
+.submenu-item:hover {
+    background-color: #ecfdf5; /* Նուրբ կանաչավուն ֆոն տարրի վրա պահելիս */
+    color: #059669;
+}
+
+/* Իրադարձությունների մատյանի (Log) ֆոնը */
+.log-container {
+    background-color: #f8fafc;
+    border-radius: 10px;
+    padding: 15px;
+    border: 1px solid #e2e8f0;
+}
+
+.log-title {
+    font-size: 1rem;
+    color: #475569;
+    margin-bottom: 10px;
+}
+
+/* Արդյունքների պատուհանի ֆոնը */
+.log-box {
+    background-color: #0f172a; /* Մուգ ֆոն տեքստը հստակ ընդգծելու համար */
+    color: #34d399; /* Վառ կանաչ տեքստ */
+    padding: 15px;
+    border-radius: 8px;
+    min-height: 100px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    word-break: break-all;
+}

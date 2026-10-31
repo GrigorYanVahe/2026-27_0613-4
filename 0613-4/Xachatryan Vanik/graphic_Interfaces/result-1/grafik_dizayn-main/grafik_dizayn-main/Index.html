@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+<!DOCTYPE html>
+<html lang="hy">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Տեքստային դաշտեր և սեղմակներ</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #eef2f7;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .container {
+            background: white;
+            max-width: 350px;
+            margin: auto;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 0 10px #bbb;
+        }
+
+        input {
+            width: 90%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #aaa;
+            border-radius: 6px;
+        }
+
+        button {
+            padding: 10px 18px;
+            margin: 8px 4px;
+            border: none;
+            border-radius: 6px;
+            background: #1677ff;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        #result {
+            margin-top: 15px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+
+<!DOCTYPE html>
+<html lang="hy">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Տվյալների մուտքագրում և ընտրություն</title>
+
+   
+</head>
+
+<body>
+
+<div class="container">
+    <h2>Տվյալների մուտքագրում</h2>
+
+    <input type="text" id="name" placeholder="Մուտքագրեք անունը">
+    <input type="text" id="surname" placeholder="Մուտքագրեք ազգանունը">
+
+    <h3>Ընտրեք մասնագիտությունը</h3>
+
+    <select id="profession">
+        <option value="">Ընտրեք մասնագիտությունը</option>
+        <option value="Ծրագրավորում">Ծրագրավորում</option>
+        <option value="Համակարգչային ցանցեր">Համակարգչային ցանցեր</option>
+        <option value="Վեբ դիզայն">Վեբ դիզայն</option>
+    </select>
+
+    <h3>Ուսուցման ձևը</h3>
+
+    <label>
+        <input type="radio" name="study" value="Առկա">
+        Առկա
+    </label>
+
+    <label>
+        <input type="radio" name="study" value="Հեռավար">
+        Հեռավար
+    </label>
+
+    <h3>Ընտրեք հմտությունները</h3>
+
+    <label>
+        <input type="checkbox" name="skill" value="HTML">
+        HTML
+    </label>
+
+    <label>
+        <input type="checkbox" name="skill" value="CSS">
+        CSS
+    </label>
+
+    <label>
+        <input type="checkbox" name="skill" value="JavaScript">
+        JavaScript
+    </label>
+
+    <button onclick="applyValues()">Հաստատել</button>
+    <button onclick="clearForm()">Մաքրել</button>
+
+    <p id="message"></p>
+</div>
+
+<script>
+    function applyValues() {
+        let name = document.getElementById("name").value.trim();
+        let surname = document.getElementById("surname").value.trim();
+        let profession = document.getElementById("profession").value;
+        let study = document.querySelector('input[name="study"]:checked');
+        let skills = document.querySelectorAll('input[name="skill"]:checked');
+        let message = document.getElementById("message");
+
+        if (!name || !surname || !profession || !study || skills.length === 0) {
+            message.textContent =
+                "Խնդրում ենք լրացնել բոլոր դաշտերը և կատարել ընտրությունները։";
+            message.style.color = "red";
+            return;
+        }
+
+        let selectedSkills = [];
+
+        skills.forEach(function(skill) {
+            selectedSkills.push(skill.value);
+        });
+
+        message.textContent =
+            "Տվյալները հաջողությամբ ընդունվեցին։ Անուն՝ " + name +
+            ", ազգանուն՝ " + surname +
+            ", մասնագիտություն՝ " + profession +
+            ", ուսուցման ձև՝ " + study.value +
+            ", հմտություններ՝ " + selectedSkills.join(", ") + "։";
+
+        message.style.color = "green";
+    }
+
+    function clearForm() {
+        document.getElementById("name").value = "";
+        document.getElementById("surname").value = "";
+        document.getElementById("profession").selectedIndex = 0;
+
+        document.querySelectorAll(
+            'input[type="radio"], input[type="checkbox"]'
+        ).forEach(function(element) {
+            element.checked = false;
+        });
+
+        document.getElementById("message").textContent = "";
+    }
+</script>
+
+</body>
+</html>
+
+
+</body>
+</html>
+
+</body>
+</html>
