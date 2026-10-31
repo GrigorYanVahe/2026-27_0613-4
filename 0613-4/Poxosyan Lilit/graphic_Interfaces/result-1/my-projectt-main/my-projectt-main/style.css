@@ -1,0 +1,40 @@
+
+body {
+    background-color: lightblue;
+    text-align: center;
+    font-family: Arial, sans-serif;
+    padding-top: 50px;
+}
+
+input[type="text"] {
+    padding: 10px;
+    border: 2px solid gray;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+input[type="radio"] {
+    margin: 15px 5px;
+}
+
+button {
+    background-color: blue;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 10px;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: darkblue;
+}
+
+#message {
+    color: darkblue;
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 25px;
+}

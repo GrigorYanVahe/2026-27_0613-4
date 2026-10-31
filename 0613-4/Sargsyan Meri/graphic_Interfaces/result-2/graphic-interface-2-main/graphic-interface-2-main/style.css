@@ -1,0 +1,140 @@
+.container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.head{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-left: 130px;
+    margin-bottom: 10px;
+}
+.head button{
+    width: 70px;
+    padding: 6px;
+    border: none;
+    border-radius: 10px;
+    background-color: hsl(39, 100%, 55%);
+}
+.head button a{
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.register{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+    padding: 10px 40px;
+    width: 290px;
+    border: 1px solid;
+    border-radius: 10px;
+    position: relative;
+}
+.login{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 40px;
+    width: 290px;
+    border: 1px solid;
+    border-radius: 10px;
+    position: relative;
+}
+#menu{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-right: 5px;
+    position: absolute;
+    gap: 2px;
+    top: -15px;
+    right: 1px;
+}
+
+.showDropdown{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100px;
+    height: 110px;
+    margin-top: 10px;
+    gap: 6px;
+    background-color: hsl(234, 38%, 50%);
+    border-radius: 10px;
+    padding: 8px;
+    z-index: 1;
+    cursor: pointer;
+}
+.myInputs{
+    z-index: 0;
+}
+#menu button{
+    width: 100px;
+    margin-top: 21px;
+    padding: 7px;
+    border: none;
+    border-radius: 5px;
+    background-color: hsl(234, 38%, 58%);
+    font-size: 14px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+
+.dropdown{
+    display: none;
+}
+.showDropdown a{
+    text-decoration: none;
+    color: white;
+}
+.showDropdown a:hover{
+    background-color: hsl(234, 38%, 65%);
+    width: 83px;
+    border-radius: 3px;
+    text-align: center;
+}
+#mySubmit{
+    width: 130px;
+    padding: 7px;
+    margin-bottom: 15px;
+    margin-top: 10px;
+    background-color: hsl(39, 100%, 55%);
+    border: none;
+    border-radius: 6px;
+    color: white;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+}
+#mySubmit:hover{
+    box-shadow: 3px 3px 10px black;
+
+}
+#myLoginSubmit{
+    width: 130px;
+    padding: 7px;
+    margin-bottom: 15px;
+    margin-top: 10px;
+    background-color: hsl(39, 100%, 55%);
+    border: none;
+    border-radius: 6px;
+    color: white;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+}
+#myLoginSubmit:hover{
+    box-shadow: 3px 3px 10px black;
+
+}
