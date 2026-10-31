@@ -350,6 +350,21 @@
             border: 1px solid var(--danger);
         }
 
+        /* Grade pill (inside badge) */
+        .grade {
+            margin-left: 0.2rem;
+            padding: 0.05rem 0.45rem;
+            border-radius: 999px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #fff;
+            background: var(--text-secondary);
+        }
+        .grade.high { background: var(--success); }
+        .grade.mid  { background: #d97706; }
+        .grade.low  { background: var(--danger); }
+        .grade.bad  { background: transparent; color: #d97706; border: 1px dashed #d97706; }
+
         /* Modal Styles */
         .modal-overlay {
             position: fixed;
@@ -440,14 +455,14 @@
         <section class="scanner-card">
             <div class="scanner-title">
                 <span>📁 Сканер локальной директории</span>
-                <span id="scanStatus">Режим: Выберите папку или используйте демо</span>
+                <span id="scanStatus">Папка не выбрана</span>
             </div>
             <div class="folder-input-group">
                 <button onclick="selectNativeFolder()">📂 Выбрать Корневую Папку</button>
                 <input type="file" id="folderInput" webkitdirectory directory multiple class="hidden" onchange="handleFileInput(event)">
                 <button class="outline" onclick="triggerFileInput()">Выбрать (Альтернативный способ)</button>
-                <div class="folder-path-display" id="pathDisplay">C:/College/Students</div>
-                <button class="outline" onclick="loadDemoData()">🔄 Сбросить на Демо-данные</button>
+                <div class="folder-path-display" id="pathDisplay">Папка не выбрана</div>
+                <button class="outline" id="reloadBtn" onclick="reloadData()">🔄 Обновить</button>
             </div>
         </section>
 
@@ -526,13 +541,21 @@ for (const item of items) {
       for (let i = 1; i <= taskCount; i++) {
         const taskFolder = path.join(ROOT_DIR, studentName, subject, `result-${i}`);
         let isDone = false;
+        let grade = null;
+        const isGrade = f => /^grade(\.txt)+$/i.test(f);
         try {
           if (fs.existsSync(taskFolder)) {
             const files = fs.readdirSync(taskFolder);
-            isDone = files.length > 0; // Сдано, если папка не пуста
+            isDone = files.some(f => !isGrade(f)); // Сдано, если есть что-то кроме grade.txt
+            const gradeFile = files.find(isGrade);
+            if (gradeFile) {
+              const m = fs.readFileSync(path.join(taskFolder, gradeFile), 'utf8').match(/\d+(?:[.,]\d+)?/);
+              const n = m ? parseFloat(m[0].replace(',', '.')) : NaN;
+              grade = (n >= 0 && n <= 10) ? n : 'invalid';
+            }
           }
         } catch (e) {}
-        studentData.subjects[subject].push({ task: `result-${i}`, done: isDone });
+        studentData.subjects[subject].push({ task: `result-${i}`, done: isDone, grade });
       }
     }
     students.push(studentData);
@@ -557,106 +580,146 @@ console.log('Готово! Результаты сохранены в results.js
             'java_script': 5
         };
 
+        // Grades: file grade.txt inside result-X containing a number 0-10
+        function isGradeFile(name) {
+            return /^grade(\.txt)+$/i.test(name);
+        }
+
+        // -> number (0..10) | 'invalid'
+        function parseGrade(text) {
+            const m = String(text).replace(/^\uFEFF/, '').match(/\d+(?:[.,]\d+)?/);
+            if (!m) return 'invalid';
+            const n = parseFloat(m[0].replace(',', '.'));
+            return (n >= 0 && n <= 10) ? n : 'invalid';
+        }
+
+        function gradeHTML(t) {
+            if (t.grade === null || t.grade === undefined) return '';
+            if (t.grade === 'invalid') {
+                return '<span class="grade bad" title="В grade.txt должно быть число от 0 до 10">?</span>';
+            }
+            const cls = t.grade >= 8 ? 'high' : t.grade >= 5 ? 'mid' : 'low';
+            const txt = String(t.grade).replace('.', ',');
+            return `<span class="grade ${cls}" title="Оценка: ${txt} из 10">${txt}</span>`;
+        }
+
         let currentSubject = 'all';
         let studentsData = [];
 
-        // Sample Initial Demo Data Generator
-        function generateDemoData() {
-            const names = ['Алексей Иванов', 'Мария Петрова', 'Дмитрий Сидоров', 'Елена Ковалева', 'Игорь Смирнов', 'Ольга Васильева'];
-            return names.map(name => {
-                const subjects = {};
-                for (const [subj, count] of Object.entries(SUBJECT_CONFIG)) {
-                    subjects[subj] = [];
-                    for (let i = 1; i <= count; i++) {
-                        // Random submission simulation
-                        const done = Math.random() > 0.35;
-                        subjects[subj].push({ task: `result-${i}`, done: done });
-                    }
-                }
-                return { name, subjects };
-            });
-        }
+        let rootHandle = null;   // handle of the chosen folder (for the Reload button)
+        let hasScanned = false;  // whether any folder has been loaded yet
 
-        // Initialize App
         window.onload = () => {
-            loadDemoData();
-        };
-
-        function loadDemoData() {
-            studentsData = generateDemoData();
-            document.getElementById('pathDisplay').innerText = 'Демо-режим (Пример данных)';
-            document.getElementById('scanStatus').innerText = 'Режим: Демонстрация';
             render();
-        }
+        };
 
         // Native Directory Picker API
         async function selectNativeFolder() {
-            if ('showDirectoryPicker' in window) {
-                try {
-                    const dirHandle = await window.showDirectoryPicker();
-                    document.getElementById('pathDisplay').innerText = dirHandle.name;
-                    document.getElementById('scanStatus').innerText = 'Сканирование папки...';
-                    
-                    const scannedStudents = [];
-
-                    for await (const entry of dirHandle.values()) {
-                        if (entry.kind === 'directory') {
-                            const studentName = entry.name;
-                            const studentData = { name: studentName, subjects: {} };
-
-                            for (const [subj, count] of Object.entries(SUBJECT_CONFIG)) {
-                                studentData.subjects[subj] = [];
-                                try {
-                                    const subjHandle = await entry.getDirectoryHandle(subj);
-                                    for (let i = 1; i <= count; i++) {
-                                        const taskName = `result-${i}`;
-                                        let isDone = false;
-                                        try {
-                                            const taskHandle = await subjHandle.getDirectoryHandle(taskName);
-                                            // Check if folder contains files
-                                            for await (const subEntry of taskHandle.values()) {
-                                                isDone = true;
-                                                break;
-                                            }
-                                        } catch (e) {
-                                            isDone = false; // missing folder
-                                        }
-                                        studentData.subjects[subj].push({ task: taskName, done: isDone });
-                                    }
-                                } catch (e) {
-                                    // Subject directory missing, mark all false
-                                    for (let i = 1; i <= count; i++) {
-                                        studentData.subjects[subj].push({ task: `result-${i}`, done: false });
-                                    }
-                                }
-                            }
-                            scannedStudents.push(studentData);
-                        }
-                    }
-
-                    studentsData = scannedStudents;
-                    document.getElementById('scanStatus').innerText = `Успешно сканировано ${studentsData.length} студентов`;
-                    render();
-
-                } catch (err) {
-                    if (err.name !== 'AbortError') {
-                        alert('Ошибка чтения директории: ' + err.message);
-                    }
-                }
-            } else {
+            if (!('showDirectoryPicker' in window)) {
                 triggerFileInput();
+                return;
+            }
+            try {
+                const handle = await window.showDirectoryPicker();
+                rootHandle = handle;
+                await scanRoot();
+            } catch (err) {
+                if (err.name !== 'AbortError') {
+                    alert('Ошибка чтения директории: ' + err.message);
+                }
             }
         }
 
-        function triggerFileInput() {
-            document.getElementById('folderInput').click();
+        // Re-scan the already chosen folder without picking it again
+        async function reloadData() {
+            if (rootHandle) {
+                const btn = document.getElementById('reloadBtn');
+                btn.disabled = true;
+                try {
+                    if (rootHandle.queryPermission) {
+                        let perm = await rootHandle.queryPermission({ mode: 'read' });
+                        if (perm !== 'granted') perm = await rootHandle.requestPermission({ mode: 'read' });
+                        if (perm !== 'granted') return;
+                    }
+                    await scanRoot();
+                } catch (err) {
+                    alert('Не удалось обновить данные: ' + err.message + '\nПопробуйте выбрать папку заново.');
+                } finally {
+                    btn.disabled = false;
+                }
+            } else if (hasScanned) {
+                triggerFileInput(); // fallback mode: the browser can't re-read, ask for the folder again
+            } else {
+                selectNativeFolder();
+            }
         }
 
-        function handleFileInput(e) {
+        async function scanRoot() {
+            document.getElementById('pathDisplay').innerText = rootHandle.name;
+            document.getElementById('scanStatus').innerText = 'Сканирование папки...';
+
+            const scannedStudents = [];
+
+            for await (const entry of rootHandle.values()) {
+                if (entry.kind === 'directory') {
+                    const studentName = entry.name;
+                    const studentData = { name: studentName, subjects: {} };
+
+                    for (const [subj, count] of Object.entries(SUBJECT_CONFIG)) {
+                        studentData.subjects[subj] = [];
+                        try {
+                            const subjHandle = await entry.getDirectoryHandle(subj);
+                            for (let i = 1; i <= count; i++) {
+                                const taskName = `result-${i}`;
+                                let isDone = false;
+                                let grade = null;
+                                try {
+                                    const taskHandle = await subjHandle.getDirectoryHandle(taskName);
+                                    // Done = folder has anything except the grade file
+                                    for await (const subEntry of taskHandle.values()) {
+                                        if (subEntry.kind === 'file' && isGradeFile(subEntry.name)) {
+                                            try {
+                                                grade = parseGrade(await (await subEntry.getFile()).text());
+                                            } catch (e) { grade = 'invalid'; }
+                                        } else {
+                                            isDone = true;
+                                        }
+                                    }
+                                } catch (e) {
+                                    isDone = false; // missing folder
+                                }
+                                studentData.subjects[subj].push({ task: taskName, done: isDone, grade });
+                            }
+                        } catch (e) {
+                            // Subject directory missing, mark all false
+                            for (let i = 1; i <= count; i++) {
+                                studentData.subjects[subj].push({ task: `result-${i}`, done: false, grade: null });
+                            }
+                        }
+                    }
+                    scannedStudents.push(studentData);
+                }
+            }
+
+            studentsData = scannedStudents;
+            hasScanned = true;
+            document.getElementById('scanStatus').innerText =
+                `Студентов: ${studentsData.length} · обновлено ${new Date().toLocaleTimeString('ru-RU')}`;
+            render();
+        }
+
+        function triggerFileInput() {
+            const input = document.getElementById('folderInput');
+            input.value = ''; // so choosing the same folder again still fires onchange
+            input.click();
+        }
+
+        async function handleFileInput(e) {
             const files = e.target.files;
             if (!files.length) return;
 
             const studentMap = {};
+            const gradeFiles = {}; // "student/subject/result-X" -> File
 
             for (let i = 0; i < files.length; i++) {
                 const file = files[i];
@@ -669,6 +732,11 @@ console.log('Готово! Результаты сохранены в results.js
                     const taskFolder = parts[3];
 
                     if (SUBJECT_CONFIG[subject] && taskFolder.startsWith('result-')) {
+                        // grade file directly in result-X: not a submission
+                        if (parts.length === 5 && isGradeFile(parts[4])) {
+                            gradeFiles[`${studentName}/${subject}/${taskFolder}`] = file;
+                            continue;
+                        }
                         if (!studentMap[studentName]) {
                             studentMap[studentName] = {};
                         }
@@ -680,6 +748,12 @@ console.log('Готово! Результаты сохранены в results.js
                 }
             }
 
+            const gradeValues = {};
+            await Promise.all(Object.entries(gradeFiles).map(async ([key, f]) => {
+                try { gradeValues[key] = parseGrade(await f.text()); }
+                catch (err) { gradeValues[key] = 'invalid'; }
+            }));
+
             // Convert map to standard structure
             studentsData = Object.keys(studentMap).map(studentName => {
                 const studentData = { name: studentName, subjects: {} };
@@ -690,7 +764,8 @@ console.log('Готово! Результаты сохранены в results.js
                         const taskName = `result-${i}`;
                         studentData.subjects[subj].push({
                             task: taskName,
-                            done: doneTasks.has(taskName)
+                            done: doneTasks.has(taskName),
+                            grade: gradeValues[`${studentName}/${subj}/${taskName}`] ?? null
                         });
                     }
                 }
@@ -699,7 +774,10 @@ console.log('Готово! Результаты сохранены в results.js
 
             const rootName = files[0].webkitRelativePath.split('/')[0];
             document.getElementById('pathDisplay').innerText = rootName;
-            document.getElementById('scanStatus').innerText = `Загружено ${studentsData.length} студентов`;
+            rootHandle = null;
+            hasScanned = true;
+            document.getElementById('scanStatus').innerText =
+                `Студентов: ${studentsData.length} · обновлено ${new Date().toLocaleTimeString('ru-RU')}`;
             render();
         }
 
@@ -752,7 +830,9 @@ console.log('Готово! Результаты сохранены в results.js
             updateStats(filtered);
 
             if (filtered.length === 0) {
-                grid.innerHTML = '<div class="empty-state">Студенты не найдены</div>';
+                grid.innerHTML = hasScanned
+                    ? '<div class="empty-state">Студенты не найдены</div>'
+                    : '<div class="empty-state">Нажмите «Выбрать Корневую Папку», чтобы загрузить работы студентов</div>';
                 return;
             }
 
@@ -772,7 +852,7 @@ console.log('Готово! Результаты сохранены в results.js
 
                     const badgesHTML = tasks.map(t => `
                         <span class="badge ${t.done ? 'done' : 'missing'}">
-                            ${t.done ? '✓' : '✗'} ${t.task}
+                            ${t.done ? '✓' : '✗'} ${t.task}${gradeHTML(t)}
                         </span>
                     `).join('');
 
