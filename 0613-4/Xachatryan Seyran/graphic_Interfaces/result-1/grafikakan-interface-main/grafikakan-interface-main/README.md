@@ -1,1 +1,0 @@
-# grafikakan-interface
