@@ -463,6 +463,7 @@
                 <button class="outline" onclick="triggerFileInput()">Выбрать (Альтернативный способ)</button>
                 <div class="folder-path-display" id="pathDisplay">Папка не выбрана</div>
                 <button class="outline" id="reloadBtn" onclick="reloadData()">🔄 Обновить</button>
+                <button class="outline" id="ensureBtn" onclick="ensureStructure()" title="Создать недостающие result-X и положить в пустые папки файл .gitkeep, чтобы Git их не терял">🧱 Создать недостающие папки</button>
             </div>
         </section>
 
@@ -532,7 +533,7 @@ const students = [];
 const items = fs.readdirSync(ROOT_DIR, { withFileTypes: true });
 
 for (const item of items) {
-  if (item.isDirectory()) {
+  if (item.isDirectory() && !item.name.startsWith('.')) {
     const studentName = item.name;
     const studentData = { name: studentName, subjects: {} };
 
@@ -543,10 +544,11 @@ for (const item of items) {
         let isDone = false;
         let grade = null;
         const isGrade = f => /^grade(\.txt)+$/i.test(f);
+        const isService = f => /^(\.gitkeep|\.keep|\.DS_Store|Thumbs\.db|desktop\.ini)$/i.test(f);
         try {
           if (fs.existsSync(taskFolder)) {
             const files = fs.readdirSync(taskFolder);
-            isDone = files.some(f => !isGrade(f)); // Сдано, если есть что-то кроме grade.txt
+            isDone = files.some(f => !isGrade(f) && !isService(f)); // Сдано, если есть что-то кроме grade.txt и .gitkeep
             const gradeFile = files.find(isGrade);
             if (gradeFile) {
               const m = fs.readFileSync(path.join(taskFolder, gradeFile), 'utf8').match(/\d+(?:[.,]\d+)?/);
@@ -583,6 +585,13 @@ console.log('Готово! Результаты сохранены в results.js
         // Grades: file grade.txt inside result-X containing a number 0-10
         function isGradeFile(name) {
             return /^grade(\.txt)+$/i.test(name);
+        }
+
+        // Service files that must NOT count as a student's work
+        // (.gitkeep keeps an empty folder in Git)
+        const KEEP_FILE = '.gitkeep';
+        function isServiceFile(name) {
+            return /^(\.gitkeep|\.keep|\.DS_Store|Thumbs\.db|desktop\.ini)$/i.test(name);
         }
 
         // -> number (0..10) | 'invalid'
@@ -654,6 +663,75 @@ console.log('Готово! Результаты сохранены в results.js
             }
         }
 
+        // Create missing subject/result-X folders and put .gitkeep into empty ones
+        async function ensureStructure() {
+            if (!rootHandle) {
+                alert(hasScanned
+                    ? 'Эта функция работает только если папка выбрана кнопкой «Выбрать Корневую Папку» (Chrome, Edge, Opera).'
+                    : 'Сначала выберите корневую папку.');
+                return;
+            }
+            const btn = document.getElementById('ensureBtn');
+            btn.disabled = true;
+            try {
+                let perm = await rootHandle.queryPermission({ mode: 'readwrite' });
+                if (perm !== 'granted') perm = await rootHandle.requestPermission({ mode: 'readwrite' });
+                if (perm !== 'granted') return;
+
+                // Pass 1: find what is missing (nothing is written yet)
+                const plan = [];
+                for await (const student of rootHandle.values()) {
+                    if (student.kind !== 'directory' || student.name.startsWith('.')) continue;
+                    for (const [subj, count] of Object.entries(SUBJECT_CONFIG)) {
+                        let subjHandle = null;
+                        try {
+                            subjHandle = await student.getDirectoryHandle(subj);
+                        } catch (e) {
+                            if (e.name !== 'NotFoundError') throw e;
+                        }
+                        for (let i = 1; i <= count; i++) {
+                            const taskName = `result-${i}`;
+                            let taskHandle = null;
+                            if (subjHandle) {
+                                try {
+                                    taskHandle = await subjHandle.getDirectoryHandle(taskName);
+                                } catch (e) {
+                                    if (e.name !== 'NotFoundError') throw e;
+                                }
+                            }
+                            if (!taskHandle) {
+                                plan.push({ student, subj, taskName, newFolder: true });
+                            } else {
+                                let empty = true;
+                                for await (const _ of taskHandle.values()) { empty = false; break; }
+                                if (empty) plan.push({ student, subj, taskName, newFolder: false });
+                            }
+                        }
+                    }
+                }
+
+                if (plan.length === 0) {
+                    alert('Всё уже на месте: у всех студентов есть все папки, пустых папок нет.');
+                    return;
+                }
+                const newFolders = plan.filter(p => p.newFolder).length;
+                if (!confirm(`Будет создано папок: ${newFolders}\nФайлов ${KEEP_FILE} будет добавлено: ${plan.length}\n\nРабота студентов не изменится. Продолжить?`)) return;
+
+                // Pass 2: create
+                for (const item of plan) {
+                    const subjHandle = await item.student.getDirectoryHandle(item.subj, { create: true });
+                    const taskHandle = await subjHandle.getDirectoryHandle(item.taskName, { create: true });
+                    await taskHandle.getFileHandle(KEEP_FILE, { create: true });
+                }
+                alert(`Готово. Создано папок: ${newFolders}, добавлено ${KEEP_FILE}: ${plan.length}.\nТеперь сделайте commit и push.`);
+                await scanRoot();
+            } catch (err) {
+                alert('Ошибка при создании папок: ' + err.message);
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
         async function scanRoot() {
             document.getElementById('pathDisplay').innerText = rootHandle.name;
             document.getElementById('scanStatus').innerText = 'Сканирование папки...';
@@ -661,7 +739,7 @@ console.log('Готово! Результаты сохранены в results.js
             const scannedStudents = [];
 
             for await (const entry of rootHandle.values()) {
-                if (entry.kind === 'directory') {
+                if (entry.kind === 'directory' && !entry.name.startsWith('.')) {
                     const studentName = entry.name;
                     const studentData = { name: studentName, subjects: {} };
 
@@ -681,7 +759,7 @@ console.log('Готово! Результаты сохранены в results.js
                                             try {
                                                 grade = parseGrade(await (await subEntry.getFile()).text());
                                             } catch (e) { grade = 'invalid'; }
-                                        } else {
+                                        } else if (!isServiceFile(subEntry.name)) {
                                             isDone = true;
                                         }
                                     }
@@ -726,23 +804,26 @@ console.log('Готово! Результаты сохранены в results.js
                 const parts = file.webkitRelativePath.split('/');
                 
                 // Expected format: Root/StudentName/Subject/result-X/file.ext
-                if (parts.length >= 4) {
+                if (parts.length >= 4 && !parts[1].startsWith('.')) {
                     const studentName = parts[1];
                     const subject = parts[2];
                     const taskFolder = parts[3];
 
                     if (SUBJECT_CONFIG[subject] && taskFolder.startsWith('result-')) {
-                        // grade file directly in result-X: not a submission
-                        if (parts.length === 5 && isGradeFile(parts[4])) {
-                            gradeFiles[`${studentName}/${subject}/${taskFolder}`] = file;
-                            continue;
-                        }
+                        // register the student even if the folder holds only service files
                         if (!studentMap[studentName]) {
                             studentMap[studentName] = {};
                         }
                         if (!studentMap[studentName][subject]) {
                             studentMap[studentName][subject] = new Set();
                         }
+                        // grade file directly in result-X: not a submission
+                        if (parts.length === 5 && isGradeFile(parts[4])) {
+                            gradeFiles[`${studentName}/${subject}/${taskFolder}`] = file;
+                            continue;
+                        }
+                        // .gitkeep, .DS_Store etc.: not a submission
+                        if (isServiceFile(parts[parts.length - 1])) continue;
                         studentMap[studentName][subject].add(taskFolder);
                     }
                 }
