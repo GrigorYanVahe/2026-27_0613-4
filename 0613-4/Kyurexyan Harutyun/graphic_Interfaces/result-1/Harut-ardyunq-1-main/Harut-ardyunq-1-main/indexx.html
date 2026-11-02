@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="hy">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ֆիթնես ակումբի գրանցում</title>
+    <link rel="stylesheet" href="st.css">
+</head>
+<body>
+
+    <div class="container">
+        <h1>Ֆիթնես ակումբի գրանցում</h1>
+
+        <!-- Radio բաժին -->
+        <div class="form-group">
+            <label>Ընտրեք անդամակցության փաթեթը:</label>
+            <label class="option-label">
+                <input type="radio" name="plan" value="Բազային (Gym only)" checked> Բազային (Gym only)
+            </label>
+            <label class="option-label">
+                <input type="radio" name="plan" value="Ստանդարտ (+ Մարզիչ)"> Ստանդարտ (+ Մարզիչ)
+            </label>
+            <label class="option-label">
+                <input type="radio" name="plan" value="Պրեմիում (Ամեն ինչ ներառված է)"> Պրեմիում (Ամեն ինչ ներառված է)
+            </label>
+            <button onclick="showPlan()">Հաստատել փաթեթը</button>
+            <p id="planMessage"></p>
+        </div>
+
+        <!-- Textarea բաժին -->
+        <div class="form-group">
+            <label for="goalInput">Ո՞րն է ձեր հիմնական նպատակը մարզումներում:</label>
+            <textarea id="goalInput" rows="3" placeholder="Նկարագրեք ձեր նպատակները..."></textarea>
+            <button onclick="showGoal()">Ուղարկել նպատակը</button>
+            <p id="goalMessage"></p>
+        </div>
+
+        <!-- Range (սահող) բաժին -->
+        <div class="form-group">
+            <label for="sessionsInput">Շաբաթական մարզումների քանակը՝ <span id="sessionsValue">3</span></label>
+            <input type="range" id="sessionsInput" min="1" max="7" value="3" oninput="updateSessions()">
+            <button onclick="showSessions()">Հաստատել հաճախականությունը</button>
+            <p id="sessionsMessage"></p>
+        </div>
+
+        <!-- Ամսաթվի բաժին -->
+        <div class="form-group">
+            <label for="dateInput">Ընտրեք հաճախման սկզբնամասը:</label>
+            <input type="date" id="dateInput">
+            <button onclick="showDate()">Հաստատել ամսաթիվը</button>
+            <p id="dateMessage"></p>
+        </div>
+    </div>
+
+    <script src="scriptj.js"></script>
+</body>
+</html>
