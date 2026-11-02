@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="hy">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Գրանցում դասընթացի</title>
+    <link rel="stylesheet" href="st.css">
+</head>
+<body>
+
+    <div class="container">
+        <h1>Դասընթացի գրանցում</h1>
+
+        <!-- Radio բաժին -->
+        <div class="form-group">
+            <label>Ընտրեք մակարդակը:</label>
+            <label class="option-label">
+                <input type="radio" name="level" value="Սկսնակ" checked> Սկսնակ
+            </label>
+            <label class="option-label">
+                <input type="radio" name="level" value="Միջին"> Միջին
+            </label>
+            <label class="option-label">
+                <input type="radio" name="level" value="Առաջադեմ"> Առաջադեմ
+            </label>
+            <button onclick="showLevel()">Հաստատել մակարդակը</button>
+            <p id="levelMessage"></p>
+        </div>
+
+        <!-- Textarea բաժին -->
+        <div class="form-group">
+            <label for="commentInput">Ինչու՞ եք ցանկանում սովորել:</label>
+            <textarea id="commentInput" rows="3" placeholder="Գրեք մի քանի նախադասություն..."></textarea>
+            <button onclick="showComment()">Ուղարկել կարծիքը</button>
+            <p id="commentMessage"></p>
+        </div>
+
+        <!-- Range (սահող) բաժին -->
+        <div class="form-group">
+            <label for="hoursInput">Շաբաթական ժամերի քանակը՝ <span id="hoursValue">5</span></label>
+            <input type="range" id="hoursInput" min="1" max="20" value="5" oninput="updateHours()">
+            <button onclick="showHours()">Հաստատել ժամերը</button>
+            <p id="hoursMessage"></p>
+        </div>
+
+        <!-- Ամսաթվի բաժին -->
+        <div class="form-group">
+            <label for="dateInput">Ընտրեք մեկնարկի ամսաթիվը:</label>
+            <input type="date" id="dateInput">
+            <button onclick="showDate()">Հաստատել ամսաթիվը</button>
+            <p id="dateMessage"></p>
+        </div>
+    </div>
+
+    <script src="scriptj.js"></script>
+</body>
+</html>
