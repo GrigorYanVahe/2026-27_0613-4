@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+
+<html lang="hy">
+
+<head>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Հեշտ ծրագրավորում</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+ <div id="main">   
+    <div class="aas">
+<h1> ՖՈՐՄԱ</h1>
+<label for="textInput" style="margin-right: 25px;">Գրեք անուն:</label>
+<input type="text" id="textInput" placeholder="Մուտքագրեք ձեր անունը" >
+<button onclick="showText()"style="margin-left :25px" >ՁԵՐ Անունը</button>
+<p id="textMessage"></p>
+<br><br>
+<label for="selectInput" style="margin-top: 15px;margin-left: -20px;">Ընտրեք տարբերակը:</label>
+<select id="selectInput"style="width: 95px; margin-left :25px">
+    <option value="Առաջին">Առաջին</option>
+    <option value="Երկրորդ">Երկրորդ</option>
+    <option value="Երրորդ">Երրորդ</option>
+</select>
+<button onclick="showSelection()">Ցույց տալ ընտրությունը</button>
+<p id="selectionMessage"></p>
+<label>
+<input type="checkbox" id="myCheckbox" style="margin-top: 15px;margin-left: -50px;">
+Accept Terms and Conditions
+</label>
+<button onclick="showCheckbox()">Ցույց տալ տեսություն</button>
+<p id="checkboxMessage"></p>
+</div> 
+</div>
+
+
+<script src="script.js">
+</script>
+</body>
+</html>
