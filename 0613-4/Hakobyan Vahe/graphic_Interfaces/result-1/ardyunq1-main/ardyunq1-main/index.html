@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./style.css">
+    <title>Document</title>
+</head>
+<body>
+<form>
+    <input type="text" required placeholder="name"><br>
+    <input type="text" required placeholder="surname"><br>
+    <input type="email" required placeholder="email"><br><label>Տարիք՝</label>
+<input type="number" name="age" placeholder="Տարիք" min="1" max="120" required>
+    <label>Սեռ՝</label>
+    <label class="gender-option">
+    <input type="radio" name="gender" value="Արական">
+    Արական
+</label>
+
+<label class="gender-option">
+    <input type="radio" name="gender" value="Իգական">
+    Իգական
+</label>
+    <br>
+    <label>Քաղաք՝</label>
+
+    <select name="city" required>
+        <option value="">Ընտրեք քաղաքը</option>
+        <option value="Երևան">Երևան</option>
+        <option value="Գյումրի">Գյումրի</option>
+        <option value="Վանաձոր">Վանաձոր</option>
+        <option value="Եղեգնաձոր">Եղեգնաձոր</option>
+        <option value="Արտաշատ">Արտաշատ</option>
+        <option value="Կապան">Կապան</option>
+        <option value="Հրազդան">Հրազդան</option>
+    </select> 
+    <br>
+
+    <label>Ի՞նչ հետաքրքրություններ ունեք։</label><br>
+
+    <input type="checkbox" name="interest" value="music"> Երաժշտություն<br>
+    <input type="checkbox" name="interest" value="films"> Ֆիլմեր<br>
+    <input type="checkbox" name="interest" value="travel"> Ճամփորդություն<br>
+    <input type="checkbox" name="interest" value="sport"> Սպորտ<br>
+    <input type="checkbox" name="interest" value="reading"> Ընթերցանություն<br>
+    <input type="checkbox" name="interest" value="programming"> Ծրագրավորում<br>
+  <button type="submit">Ուղարկել</button>
+  <button type="reset">Մաքրել</button>
+
+
+</form>
+
+    
+    <script src="./script.js"></script>
+</body>
+</html>
