@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <header>
+        <div id="welcomeSection" class="Welcome">
+            <h1>Բարի գալուստ մեր կայք</h1>
+            <p>Գնա Menu բաժին</p>
+        </div>
+
+        <!-- Գլխավոր էջի Մենյու -->
+        <div class="Menu" id="mainMenuContainer">
+            <button id="menuButton">Menu</button>
+            <div id="menuItems" class="menu-items">
+                <button id="loginButton">Login</button>
+                <button id="exitButton">Exit</button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div id="loginPage" class="login-page">
+            <h2>Login</h2>
+            <input type="text" placeholder="Օգտանուն" id="nikname">
+            <input type="password" placeholder="Գաղտնաբառ" id="passwordd">
+            <button id="submitBt">Հաստատել</button>
+
+            <!-- Այստեղ տեղափոխեցինք մենյուն, որպեսզի լինի լոգինի հետ -->
+            <div class="login-menu-box" style="margin-top: 15px;">
+                <button id="backToHomeBtn">Գլխավոր էջ</button>
+            </div>
+        </div>
+
+        <div id="seccessPage" class="seccess-page">
+            <h2>Հաստատված է</h2>
+            <button id="backFromSuccessBtn" style="margin-top: 15px;">Գլխավոր էջ</button>
+        </div>
+    </main>
+
+    <style>
+        body {
+            background: linear-gradient(90deg, rgb(206, 76, 165) 0%, rgb(233, 64, 64) 50%, rgb(195, 43, 119) 100%);
+            font-family: cursive;
+        }
+
+        header {
+            display: flex;
+            padding: 30px;
+            align-items: center;
+            justify-content: right;
+            position: absolute;
+            top: 30%;
+            left: 25%;
+        }
+
+        .Welcome {
+            color: pink;
+            text-align: center;
+        }
+
+        .Welcome H1 {
+            font-size: 50px;
+        }
+
+        .Welcome p {
+            font-size: 20px;
+        }
+
+        .Menu {
+            position: absolute;
+            top: 55px;
+            right: -90px;
+        }
+
+        button {
+            background-color: #faafbe;
+            color: rgb(200, 51, 83);
+            font-family: cursive;
+            font-size: 100%;
+            border-radius: 20%;
+            cursor: pointer;
+            border: dotted;
+        }
+
+        .menu-items {
+            display: none;
+            position: absolute;
+            min-width: 100px;
+            right: 0;
+            top: 40px;
+        }
+
+        .menu-items button {
+            display: block;
+            width: 100%;
+            margin-top: 5px;
+        }
+
+        .menu-items.show {
+            display: block;
+        }
+
+        .login-page,
+        .seccess-page {
+            display: none;
+            text-align: center;
+            margin-top: 100px;
+        }
+
+        .login-page input {
+            display: block;
+            width: 300px;
+            padding: 12px;
+            margin: 15px auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .login-page button#submitBt {
+            width: 326px;
+        }
+
+        .seccess-page h2 {
+            color: black;
+        }
+    </style>
+    <script src="JAVASCRIPT.js"></script>
+</body>
+
+</html>

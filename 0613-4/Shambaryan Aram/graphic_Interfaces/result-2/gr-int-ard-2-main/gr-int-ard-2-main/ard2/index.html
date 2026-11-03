@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Գրաֆիկական մենյու</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="menu">
+        <button onclick="showMessage('Գլխավոր')">Գլխավոր</button>
+        <div class="dropdown">
+            <button>Մենյու</button>
+            <div class="submenu">
+                <button onclick="showMessage('Նկարներ')">Նկարներ</button>
+                <button onclick="showMessage('Տեսանյութ')">Տեսանյութ</button>
+                <button onclick="showMessage('Երաժշտություն')">Երաժշտություն</button>
+            </div>
+        </div>
+        <button onclick="showMessage('Կարգավորումներ')">Կարգավորումներ</button>
+    </div>
+    <h2 id="result">Ընտրեք մենյու</h2>
+    <input type="text" id="myInput" placeholder="Գրեք այստեղ">
+    <script src="script.js"></script>
+</body>
+</html>
